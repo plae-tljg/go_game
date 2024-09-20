@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Go Game</title>
+    <style>
+        .board {
+            position: relative;
+            width: 380px;
+            height: 380px;
+            background-color: #ffffcc; /* pale yellow background */
+            padding: 10px;
+            border: 1px solid #000;
+        }
+        .line {
+            position: absolute;
+            width: 380px;
+            height: 1px;
+            background-color: #000; /* line color */
+        }
+        .line.vertical {
+            width: 1px;
+            height: 380px;
+        }
+        .stone {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background-color: transparent; /* transparent background */
+            border: none; /* no border */
+        }
+        .stone.black {
+            background-color: #000; /* black stone color */
+            border: 1px solid #000; /* add border to black stones */
+        }
+        .stone.white {
+            background-color: #fff; /* white stone color */
+            border: 1px solid #000; /* add border to white stones */
+            box-shadow: 0 0 2px #000; /* add shadow to white stones */
+        }
+    </style>
+</head>
+<body>
+    <div class="board" id="board"></div>
+    <button id="reset-button">Reset</button>
+    <script>
+        const board = document.getElementById("board");
+        const resetButton = document.getElementById("reset-button");
+
+        let playerTurn = "Black";
+        let boardState = [];
+
+        for (let i = 0; i < 19; i++) {
+            let row = [];
+            for (let j = 0; j < 19; j++) {
+                let stone = document.createElement("div");
+                stone.classList.add("stone");
+                stone.style.top = `${i * 20 - 8}px`;
+                stone.style.left = `${j * 20 - 8}px`;
+                stone.dataset.x = i;
+                stone.dataset.y = j;
+                board.appendChild(stone);
+                row.push(stone);
+            }
+            boardState.push(row);
+        }
+
+        for (let i = 0; i < 19; i++) {
+            let line = document.createElement("div");
+            line.classList.add("line");
+            line.style.top = `${i * 20}px`;
+            board.appendChild(line);
+        }
+
+        for (let i = 0; i < 19; i++) {
+            let line = document.createElement("div");
+            line.classList.add("line", "vertical");
+            line.style.left = `${i * 20}px`;
+            board.appendChild(line);
+        }
+
+        board.addEventListener("click", (e) => {
+            if (e.target.classList.contains("stone")) {
+                let x = parseInt(e.target.dataset.x);
+                let y = parseInt(e.target.dataset.y);
+                if (playerTurn === "Black") {
+                    e.target.classList.add("black");
+                    boardState[x][y] = 1;
+                    playerTurn = "White";
+                } else {
+                    e.target.classList.add("white");
+                    boardState[x][y] = 2;
+                    playerTurn = "Black";
+                }
+            }
+        });
+
+        resetButton.addEventListener("click", () => {
+            playerTurn = "Black";
+            for (let i = 0; i < 19; i++) {
+                for (let j = 0; j < 19; j++) {
+                    boardState[i][j].classList.remove("black", "white");
+                    boardState[i][j] = 0;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
